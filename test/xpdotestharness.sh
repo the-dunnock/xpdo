@@ -21,3 +21,4 @@
 #
 
 phpunit --colors --syntax-check xPDOTestHarness
+

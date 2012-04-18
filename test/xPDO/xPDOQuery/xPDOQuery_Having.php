@@ -71,10 +71,9 @@ class xPDOQueryHavingTest extends xPDOTestCase {
         $success = false;
         try {
             $criteria = $this->xpdo->newQuery('Item');
-            $criteria->groupby('id');
-            $criteria->groupby('name');
-            $criteria->groupby('color');
+            $criteria->groupby($this->xpdo->getSelectColumns('Item'));
             $criteria->having($having);
+            $criteria->sortby($this->xpdo->escape('name'));
             $result = $this->xpdo->getCollection('Item',$criteria);
             if (is_array($result) && !empty($result)) {
                 foreach ($result as $r) { $result = $r; break; }
@@ -107,8 +106,9 @@ class xPDOQueryHavingTest extends xPDOTestCase {
     	if (!empty(xPDOTestHarness::$debug)) print "\n" . __METHOD__ . " = ";
         try {
             $criteria = $this->xpdo->newQuery('Item');
-            $criteria->groupby('name');
+            $criteria->groupby($this->xpdo->getSelectColumns('Item'));
             $criteria->having($having);
+            $criteria->sortby($this->xpdo->escape('name'));
             $result = $this->xpdo->getCollection('Item',$criteria);
             if (is_array($result) && !empty($result)) {
                 $match = null;
@@ -144,9 +144,7 @@ class xPDOQueryHavingTest extends xPDOTestCase {
         $success = false;
         try {
             $criteria = $this->xpdo->newQuery('Item');
-            $criteria->groupby('id');
-            $criteria->groupby('name');
-            $criteria->groupby('color');
+            $criteria->groupby($this->xpdo->getSelectColumns('Item'));
             $criteria->having($having);
             $criteria->limit($limit,$start);
             $result = $this->xpdo->getCollection('Item',$criteria);

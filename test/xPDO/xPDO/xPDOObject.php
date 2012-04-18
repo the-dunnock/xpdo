@@ -92,14 +92,14 @@ class xPDOObjectTest extends xPDOTestCase {
             $person->set('security_level',1);
             $person->set('blood_type',$bloodTypeABPlus->get('type'));
             $person->save();
-
+            
             $phone = $this->xpdo->newObject('Phone');
             $phone->fromArray(array(
                 'type' => 'work',
                 'number' => '555-222-2222',
             ));
             $phone->save();
-
+            
             $personPhone = $this->xpdo->newObject('PersonPhone');
             $personPhone->fromArray(array(
                 'person' => 2,
@@ -107,14 +107,14 @@ class xPDOObjectTest extends xPDOTestCase {
                 'is_primary' => true,
             ),'',true,true);
             $personPhone->save();
-
+            
             $phone = $this->xpdo->newObject('Phone');
             $phone->fromArray(array(
                 'type' => 'home',
                 'number' => '555-555-5555',
             ));
             $phone->save();
-
+            
             $personPhone = $this->xpdo->newObject('PersonPhone');
             $personPhone->fromArray(array(
                 'person' => 2,
@@ -195,7 +195,6 @@ class xPDOObjectTest extends xPDOTestCase {
             $personPhone1= $this->xpdo->newObject('PersonPhone');
             $personPhone1->addOne($phone1);
             $personPhone1->set('is_primary', false);
-
             $personPhone2= $this->xpdo->newObject('PersonPhone');
             $personPhone2->addOne($phone2);
             $personPhone2->set('is_primary', true);

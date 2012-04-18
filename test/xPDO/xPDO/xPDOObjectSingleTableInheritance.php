@@ -117,7 +117,6 @@ class xPDOObjectSingleTableInheritanceTest extends xPDOTestCase {
 
             $object->addMany($relatedObjects, 'relMany');
             $object->save();
-
         } catch (Exception $e) {
             $this->xpdo->log(xPDO::LOG_LEVEL_ERROR, $e->getMessage(), '', __METHOD__, __FILE__, __LINE__);
         }

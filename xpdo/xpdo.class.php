@@ -2428,11 +2428,11 @@ class xPDO {
     /**
      * @see http://php.net/manual/en/function.pdo-lastinsertid.php
      */
-    public function lastInsertId() {
+    public function lastInsertId($className = null, $column = null) {
         if (!$this->connect()) {
             return false;
         }
-        return $this->pdo->lastInsertId();
+        return $this->driver->lastInsertId($className, $column);
     }
 
     /**
