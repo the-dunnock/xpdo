@@ -52,9 +52,8 @@ $xpdo_meta_map['Person']= array (
     ),
     'dob' => 
     array (
-      'dbtype' => 'varchar2',
+      'dbtype' => 'date',
       'phptype' => 'date',
-      'precision' => '10',
       'null' => true,
     ),
     'gender' => 

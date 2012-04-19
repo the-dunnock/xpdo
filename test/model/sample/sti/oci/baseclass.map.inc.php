@@ -9,7 +9,7 @@ $xpdo_meta_map['baseClass']= array (
   array (
     'field1' => 0,
     'field2' => '',
-    'date_modified' => 'SYSTIMESTAMP',
+    'date_modified' => 'CURRENT_TIMESTAMP',
     'fkey' => NULL,
     'class_key' => 'baseClass',
   ),
@@ -36,7 +36,7 @@ $xpdo_meta_map['baseClass']= array (
       'dbtype' => 'timestamp',
       'phptype' => 'timestamp',
       'null' => false,
-      'default' => 'SYSTIMESTAMP',
+      'default' => 'CURRENT_TIMESTAMP',
     ),
     'fkey' => 
     array (

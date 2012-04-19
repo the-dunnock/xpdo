@@ -44,7 +44,6 @@ class xPDOQuery_oci extends xPDOQuery {
         $offset= !empty($this->query['offset']) ? intval($this->query['offset']) : 0;
         $orderBySql = '';
         $limitSql = '';
-        $fields = explode(",", str_replace(" ", "", $this->xpdo->getSelectColumns($this->getClass())));
         
         if ($command == 'SELECT' && !empty ($this->query['sortby'])) {
             $sortby= reset($this->query['sortby']);
@@ -122,14 +121,27 @@ class xPDOQuery_oci extends xPDOQuery {
             if (!empty($this->query['set'])) {
                 reset($this->query['set']);
                 $clauses = array();
+                $fieldMeta = $this->xpdo->getFieldMeta($this->_class);
+                $fieldAliases= $this->xpdo->getFieldAliases($this->_class);
+                
                 while (list($setKey, $setVal) = each($this->query['set'])) {
                     $value = $setVal['value'];
                     $type = $setVal['type'];
-                    $this->xpdo->log(xPDO::LOG_LEVEL_INFO, "Value and type: \n" . print_r($setVal, true) . "\n");
                     if ($value !== null && in_array($type, array(PDO::PARAM_INT, PDO::PARAM_STR))) {
                         $value = $this->xpdo->quote($value, $type);
                     }
-                    $this->xpdo->log(xPDO::LOG_LEVEL_INFO, "The String: \n" . $this->xpdo->escape($setKey) . ' = ' . $value . "\n");
+                    if (!array_key_exists($setKey, $fieldMeta)) {
+                        if (array_key_exists($setKey, $fieldAliases)) {
+                            $setKey = $fieldAliases[$setKey];
+                        } else {
+                            continue;
+                        }
+                    }
+                    if (array_key_exists($setKey, $fieldMeta) && $fieldMeta[$setKey]['dbtype'] == 'timestamp') {
+                        $value = "to_date({$value}, 'yyyy-mm-dd HH24:MI:SS')";
+                    } else if (array_key_exists($setKey, $fieldMeta) && $fieldMeta[$setKey]['dbtype'] == 'date') {
+                        $value = "to_date({$value}, 'yyyy-mm-dd')";
+                    }
                     $clauses[] = $this->xpdo->escape($setKey) . ' = ' . $value;
                 }
                 if (!empty($clauses)) {

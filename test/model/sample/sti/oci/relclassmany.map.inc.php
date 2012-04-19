@@ -8,7 +8,7 @@ $xpdo_meta_map['relClassMany']= array (
   array (
     'field1' => NULL,
     'field2' => NULL,
-    'date_modified' => 'SYSTIMESTAMP',
+    'date_modified' => 'CURRENT_TIMESTAMP',
     'fkey' => NULL,
   ),
   'fieldMeta' => 
@@ -32,7 +32,7 @@ $xpdo_meta_map['relClassMany']= array (
       'dbtype' => 'timestamp',
       'phptype' => 'timestamp',
       'null' => false,
-      'default' => 'SYSTIMESTAMP',
+      'default' => 'CURRENT_TIMESTAMP',
     ),
     'fkey' => 
     array (

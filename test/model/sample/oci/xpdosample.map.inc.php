@@ -69,13 +69,12 @@ $xpdo_meta_map['xPDOSample']= array (
     array (
       'dbtype' => 'varchar2',
       'precision' => '100',
-      'phptype' => 'date',
+      'phptype' => 'datetime',
       'null' => true,
     ),
     'date' => 
     array (
-      'dbtype' => 'varchar2',
-      'precision' => '100',
+      'dbtype' => 'date',
       'phptype' => 'date',
       'null' => true,
     ),

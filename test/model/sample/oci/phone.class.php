@@ -32,6 +32,7 @@ class Phone_oci extends Phone {
             $cols= array ();
             $bindings= array ();
             $updateSql= array ();
+            $placeholders = array();
             foreach (array_keys($this->_dirty) as $_k) {
                 if (!array_key_exists($_k, $this->_fieldMeta)) {
                     continue;
@@ -70,6 +71,13 @@ class Phone_oci extends Phone {
                 elseif (!in_array($this->_fieldMeta[$_k]['phptype'], array ('string','password','datetime','timestamp','date','time','array','json'))) {
                     $fieldType= PDO::PARAM_INT;
                 }
+                if ($this->_fieldMeta[$_k]['dbtype'] == 'timestamp') {
+                    $placeholders[$_k] = "to_date(:\"{$_k}\", 'yyyy-mm-dd HH24:MI:SS')";
+                } else if ($this->_fieldMeta[$_k]['dbtype'] == 'date'){
+                    $placeholders[$_k] = "to_date(:\"{$_k}\", 'yyyy-mm-dd')";
+                } else {
+                    $placeholders[$_k] = ":\"{$_k}\"";
+                }
                 if ($this->_new) {
                     $cols[$_k]= $this->xpdo->escape($_k);
                     $bindings[":\"{$_k}\""]['value']= $fieldValue;
@@ -77,11 +85,12 @@ class Phone_oci extends Phone {
                 } else {
                     $bindings[":\"{$_k}\""]['value']= $fieldValue;
                     $bindings[":\"{$_k}\""]['type']= $fieldType;
-                    $updateSql[]= $this->xpdo->escape($_k) . " = :\"{$_k}\"";
+                    
+                    $updateSql[]= $this->xpdo->escape($_k) . " = $placeholders[$_k]";
                 }
             }
             if ($this->_new) {
-                $sql= "INSERT INTO {$this->_table} (" . implode(', ', array_values($cols)) . ") VALUES (" . implode(', ', array_keys($bindings)) . ")";
+                $sql= "INSERT INTO {$this->_table} (" . implode(', ', array_values($cols)) . ") VALUES (" . implode(', ', $placeholders) . ")";
             } else {
                 if ($pk && $pkn) {
                     if (is_array($pkn)) {

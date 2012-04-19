@@ -5,7 +5,7 @@
         <field key="last_name" dbtype="varchar2" precision="100" phptype="string" null="false" default="" />
         <field key="middle_name" dbtype="varchar2" precision="100" phptype="string" null="false" default="" />
         <field key="date_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" />
-        <field key="dob" dbtype="varchar2" phptype="date" precision="10" null="true" />
+        <field key="dob" dbtype="date" phptype="date" null="true" />
         <field key="gender" dbtype="varchar2" precision="1" phptype="string" null="false" default="" attributes="CHECK (&quot;gender&quot; IN('','M','F'))" />
         <field key="blood_type" dbtype="varchar2" precision="100" phptype="string" null="true" />
         <field key="username" dbtype="varchar2" precision="255" phptype="string" null="false" index="unique" />
@@ -53,8 +53,8 @@
         <field key="text" dbtype="varchar2" precision="2000" phptype="string" null="true" />
         <field key="timestamp" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" />
         <field key="unix_timestamp" dbtype="INTEGER" phptype="integer" null="false" default="0" />
-        <field key="date_time" dbtype="varchar2" precision="100" phptype="date" null="true" />
-        <field key="date" dbtype="varchar2" precision="100" phptype="date" null="true" />
+        <field key="date_time" dbtype="varchar2" precision="100" phptype="datetime" null="true" />
+        <field key="date" dbtype="date" phptype="date" null="true" />
         <field key="enum" dbtype="varchar2" precision="1" phptype="string" null="false" attributes="CHECK (&quot;enum&quot; IN('','T','F'))"/>
         <field key="password" dbtype="varchar2" precision="255" phptype="string" null="false" />
         <field key="integer" dbtype="INTEGER" phptype="integer" null="false" />
