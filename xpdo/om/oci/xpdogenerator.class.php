@@ -184,22 +184,4 @@ class xPDOGenerator_oci extends xPDOGenerator {
         fclose($file);
         return true;
     }
-    
-    public function getClassPlatformTemplate($platform) {
-        if ($this->platformTemplate) return $this->platformTemplate;
-
-        $template= <<<'EOD'
-<?php
-require_once (dirname(dirname(__FILE__)) . '/[+class-lowercase+].class.php');
-class [+class+]_oci extends [+class+] {
-    public function save($cacheFlag= null) {
-        $saved = xPDOObject_oci::save($cacheFlag);
-        if ($saved)
-            $saved = parent::save($cacheFlag);
-        return $saved;
-    }
-}
-EOD;
-        return $template;
-    }
 }

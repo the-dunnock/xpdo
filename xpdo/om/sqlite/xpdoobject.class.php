@@ -29,7 +29,7 @@
  * @subpackage om.sqlite
  */
 
-if (!class_exists('xPDOObject')) {
+if (!class_exists('xPDOObject_base')) {
     /** Include the parent {@link xPDOObject} class. */
     include_once (strtr(realpath(dirname(__FILE__)), '\\', '/') . '/../xpdoobject.class.php');
 }
@@ -42,7 +42,7 @@ if (!class_exists('xPDOObject')) {
  * @package xpdo
  * @subpackage om.sqlite
  */
-class xPDOObject_sqlite extends xPDOObject {}
+class xPDOObject extends xPDOObject_base {}
 
 /**
  * Extend this abstract class to define a class having an integer primary key.
@@ -50,4 +50,4 @@ class xPDOObject_sqlite extends xPDOObject {}
  * @package xpdo
  * @subpackage om.sqlite
  */
-class xPDOSimpleObject_sqlite extends xPDOSimpleObject {}
+class xPDOSimpleObject extends xPDOObject {}

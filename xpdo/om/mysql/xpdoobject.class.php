@@ -29,7 +29,7 @@
  * @subpackage om.mysql
  */
 
-if (!class_exists('xPDOObject')) {
+if (!class_exists('xPDOObject_base')) {
     /** Include the parent {@link xPDOObject} class. */
     include_once (dirname(dirname(__FILE__)) . '/xpdoobject.class.php');
 }
@@ -42,7 +42,7 @@ if (!class_exists('xPDOObject')) {
  * @package xpdo
  * @subpackage om.mysql
  */
-class xPDOObject_mysql extends xPDOObject {}
+class xPDOObject extends xPDOObject_base {}
 
 /**
  * Extend this abstract class to define a class having an integer primary key.
@@ -50,4 +50,4 @@ class xPDOObject_mysql extends xPDOObject {}
  * @package xpdo
  * @subpackage om.mysql
  */
-class xPDOSimpleObject_mysql extends xPDOSimpleObject {}
+class xPDOSimpleObject extends xPDOObject {}

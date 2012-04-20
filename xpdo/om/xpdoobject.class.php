@@ -42,7 +42,7 @@
  * @package xpdo
  * @subpackage om
  */
-class xPDOObject {
+class xPDOObject_base {
     /**
      * A convenience reference to the xPDO object.
      * @var xPDO
@@ -2476,4 +2476,4 @@ class xPDOObject {
  * @package xpdo
  * @subpackage om
  */
-class xPDOSimpleObject extends xPDOObject {}
+class xPDOSimpleObject_base extends xPDOObject_base {}

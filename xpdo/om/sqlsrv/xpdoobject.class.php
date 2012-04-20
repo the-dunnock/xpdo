@@ -29,7 +29,7 @@
  * @subpackage om.sqlsrv
  */
 
-if (!class_exists('xPDOObject')) {
+if (!class_exists('xPDOObject_base')) {
     /** Include the parent {@link xPDOObject} class. */
     include_once (dirname(dirname(__FILE__)) . '/xpdoobject.class.php');
 }
@@ -42,7 +42,7 @@ if (!class_exists('xPDOObject')) {
  * @package xpdo
  * @subpackage om.sqlsrv
  */
-class xPDOObject_sqlsrv extends xPDOObject {}
+class xPDOObject extends xPDOObject_base {}
 
 /**
  * Extend this abstract class to define a class having an integer primary key.
@@ -50,4 +50,4 @@ class xPDOObject_sqlsrv extends xPDOObject {}
  * @package xpdo
  * @subpackage om.sqlsrv
  */
-class xPDOSimpleObject_sqlsrv extends xPDOSimpleObject {}
+class xPDOSimpleObject extends xPDOObject {}
