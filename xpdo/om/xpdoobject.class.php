@@ -1451,7 +1451,7 @@ class xPDOObject {
                 if ($result) {
                     if ($pkn && !$pk) {
                         if ($pkGenerated) {
-                            $this->_fields[$this->getPK()]= $this->xpdo->lastInsertId();
+                            $this->_fields[$this->getPK()]= $this->xpdo->lastInsertId($this->_class, $pkn);
                         }
                         $pk= $this->getPrimaryKey();
                     }
