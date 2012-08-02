@@ -351,8 +351,6 @@ class xPDO {
                     }
                 }
             }
-            $this->loadClass('xPDOObject_base');
-            $this->loadClass('xPDOSimpleObject_base');
             $this->loadClass('xPDOObject');
             $this->loadClass('xPDOSimpleObject');
             if (isset($this->config[xPDO::OPT_BASE_CLASSES])) {
@@ -617,12 +615,11 @@ class xPDO {
         } elseif (isset ($this->packages[$this->package])) {
             $pqn= $this->package . '.' . $fqn;
             if (!$pkgClass= $this->_loadClass($class, $pqn, $included, $this->packages[$this->package]['path'], $transient)) {
-                if ($otherPkgs= array_diff_assoc($this->packages, array($this->package => $this->packages[$this->package]))) {
-                    foreach ($otherPkgs as $pkg => $pkgDef) {
-                        $pqn= $pkg . '.' . $fqn;
-                        if ($pkgClass= $this->_loadClass($class, $pqn, $included, $pkgDef['path'], $transient)) {
-                            break;
-                        }
+                foreach ($this->packages as $pkg => $pkgDef) {
+                    if ($pkg === $this->package) continue;
+                    $pqn= $pkg . '.' . $fqn;
+                    if ($pkgClass= $this->_loadClass($class, $pqn, $included, $pkgDef['path'], $transient)) {
+                        break;
                     }
                 }
             }
@@ -632,6 +629,7 @@ class xPDO {
         }
         if ($class === false) {
             $this->log(xPDO::LOG_LEVEL_ERROR, "Could not load class: {$classname} from {$fqn}.");
+            
         }
         return $class;
     }
@@ -2430,11 +2428,19 @@ class xPDO {
     /**
      * @see http://php.net/manual/en/function.pdo-lastinsertid.php
      */
+<<<<<<< HEAD
     public function lastInsertId($className = null, $column = null) {
         if (!$this->connect()) {
             return false;
         }
         return $this->driver->lastInsertId($className, $column);
+=======
+    public function lastInsertId($className = null, $fieldName = null) {
+        if (!$this->connect()) {
+            return false;
+        }
+        return $this->driver->lastInsertId($className, $fieldName);
+>>>>>>> 5f4104d527494e6d3af4a48aadbd33e42fa54db9
     }
 
     /**
@@ -2509,11 +2515,11 @@ class xPDO {
     /**
      * Convert current microtime() result into seconds.
      *
+     * @deprecated Use microtime(true) directly; this was to emulate PHP 5 behavior in PHP 4.
      * @return float
      */
     public function getMicroTime() {
-       list($usec, $sec) = explode(' ', microtime());
-       return ((float)$usec + (float)$sec);
+       return microtime(true);
     }
 
     /**
@@ -2634,7 +2640,7 @@ class xPDO {
                     } else {
                         $v= 'NULL';
                     }
-                    $bound[$pattern] = str_replace(array('$', '\\'), array('\$', '\\\\'), $v);
+                    $bound[$pattern] = str_replace(array('\\', '$'), array('\\\\', '\$'), $v);
                 } else {
                     $parse= create_function('$d,$v,$t', 'return $t > 0 ? $d->quote($v, $t) : \'NULL\';');
                     $sql= preg_replace("/(\?)/e", '$parse($this,$bindings[$k][\'value\'],$type);', $sql, 1);

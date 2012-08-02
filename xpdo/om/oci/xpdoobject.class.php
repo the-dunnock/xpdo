@@ -42,7 +42,7 @@ if (!class_exists('xPDOObject_base')) {
  * @package xpdo
  * @subpackage om.oci
  */
-class xPDOObject extends xPDOObject_base {
+class xPDOObject_oci extends xPDOObject {
     public function __construct(xPDO & $xpdo) {
         parent::__construct($xpdo);
     }
@@ -231,4 +231,4 @@ class xPDOObject extends xPDOObject_base {
  * @package xpdo
  * @subpackage om.oci
  */
-class xPDOSimpleObject extends xPDOObject {}
+class xPDOSimpleObject_oci extends xPDOSimpleObject {}
