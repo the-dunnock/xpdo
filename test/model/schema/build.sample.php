@@ -26,11 +26,8 @@ $properties = array();
 include(dirname(dirname(dirname(dirname(__FILE__)))) . '/xpdo/xpdo.class.php');
 include(dirname(dirname(dirname(dirname(__FILE__)))) . '/test/properties.inc.php');
 
-<<<<<<< HEAD
-$dbtypes = array('mysql', 'sqlite', 'sqlsrv', 'oci');
-=======
-$dbtypes = array('mysql', 'sqlsrv', 'sqlite', 'pgsql');
->>>>>>> 5f4104d527494e6d3af4a48aadbd33e42fa54db9
+
+$dbtypes = array('mysql', 'sqlite', 'sqlsrv', 'oci', 'pgsql');
 
 foreach ($dbtypes as $dbtype) {
     $xpdo= new xPDO($properties["{$dbtype}_string_dsn_test"], $properties["{$dbtype}_string_username"], $properties["{$dbtype}_string_password"], $properties["{$dbtype}_array_driverOptions"]);
