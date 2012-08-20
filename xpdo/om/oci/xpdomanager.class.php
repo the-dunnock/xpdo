@@ -155,7 +155,7 @@ class xPDOManager_oci extends xPDOManager {
                     foreach ($indexes as $indexkey => $indexdef) {
                         $indexType = ($indexdef['primary'] ? 'PRIMARY KEY' : ($indexdef['unique'] ? 'UNIQUE' : 'INDEX'));
                         $indexset = $this->getIndexDef($className, $indexkey, $indexdef);
-                        $idxName = $this->xpdo->escape($this->xpdo->literal($tableName) . "_" . $name);
+                        $idxName = $this->xpdo->escape($this->xpdo->literal($tableName) . "_" . $indexkey);
                         switch ($indexType) {
                             case 'INDEX':
                                 $createIndices[$indexkey] = "CREATE INDEX {$idxName} ON {$tableName} ({$indexset})";
