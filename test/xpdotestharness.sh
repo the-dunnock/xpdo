@@ -21,4 +21,3 @@
 #
 
 phpunit --colors xPDOTestHarness
-

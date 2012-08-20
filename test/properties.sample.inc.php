@@ -97,30 +97,7 @@ $properties['sqlsrv_array_options']= array(
         ),
     ),
 );
-/* oracle */
-$properties['oci_string_dsn_test']= 'oci:dbname=localhost:1521/xe';
-$properties['oci_string_dsn_nodb']= 'oci:dbname=localhost:1521';
-$properties['oci_string_dsn_error']= 'oci:dbname=xyz;123';
-$properties['oci_string_username']= '';
-$properties['oci_string_password']= '';
-$properties['oci_array_driverOptions']= array();
-$properties['oci_array_options']= array(
-    xPDO::OPT_CACHE_PATH => $properties['xpdo_test_path'] . 'cache/',
-    xPDO::OPT_HYDRATE_FIELDS => true,
-    xPDO::OPT_HYDRATE_RELATED_OBJECTS => true,
-    xPDO::OPT_HYDRATE_ADHOC_FIELDS => true,
-    xPDO::OPT_CONNECTIONS => array(
-        array(
-            'dsn' => $properties['oci_string_dsn_test'],
-            'username' => $properties['oci_string_username'],
-            'password' => $properties['oci_string_password'],
-            'options' => array(
-                xPDO::OPT_CONN_MUTABLE => true,
-            ),
-            'driverOptions' => $properties['oci_array_driverOptions'],
-        ),
-    ),
-);
+
 /* PHPUnit test config */
 $properties['xpdo_driver']= 'mysql';
 $properties['logLevel']= xPDO::LOG_LEVEL_INFO;

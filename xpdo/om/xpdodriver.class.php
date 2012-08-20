@@ -102,7 +102,7 @@ abstract class xPDODriver {
         return $phptype;
     }
     
-    public function lastInsertId($className = null, $column = null) {
+    public function lastInsertId($className = null, $fieldName = null) {
         return $this->xpdo->pdo->lastInsertId();
     }
 }

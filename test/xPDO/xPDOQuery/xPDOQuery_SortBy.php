@@ -72,7 +72,7 @@ class xPDOQuerySortByTest extends xPDOTestCase {
         $success = false;
         try {
             $criteria = $this->xpdo->newQuery('Item');
-            $criteria->sortby($this->xpdo->escape($sort),$dir);
+            $criteria->sortby($sort,$dir);
             $result = $this->xpdo->getCollection('Item',$criteria);
             if (is_array($result) && !empty($result)) {
                 foreach ($result as $r) { $result = $r; break; }
@@ -93,7 +93,7 @@ class xPDOQuerySortByTest extends xPDOTestCase {
         return array(
             array('name','ASC','item-01'),
             array('name','DESC','item-39'),
-            //array('color' . ", " . 'name','ASC','item-03'), Needs to escape columns accordingly
+            array('color,name','ASC','item-03'),
         );
     }
 
@@ -105,7 +105,7 @@ class xPDOQuerySortByTest extends xPDOTestCase {
     	if (!empty(xPDOTestHarness::$debug)) print "\n" . __METHOD__ . " = ";
         try {
             $criteria = $this->xpdo->newQuery('Item');
-            $criteria->groupby($this->xpdo->getSelectColumns('Item'));
+            $criteria->groupby("{$sort},id,color");
             $criteria->sortby($this->xpdo->escape($sort),$dir);
             $criteria->sortby($this->xpdo->escape('id'),'ASC');
             $criteria->sortby($this->xpdo->escape('color'),'ASC');

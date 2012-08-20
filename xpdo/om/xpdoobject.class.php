@@ -239,12 +239,12 @@ class xPDOObject {
                 $xpdo->queryTime= $xpdo->queryTime + $totaltime;
                 $xpdo->executedQueries= $xpdo->executedQueries + 1;
                 $errorInfo= $criteria->stmt->errorInfo();
-                $xpdo->log(xPDO::LOG_LEVEL_ERROR, 'Error ' . $criteria->stmt->errorCode() . " executing statement: \n" . print_r($errorInfo, true));
+                $xpdo->log(xPDO::LOG_LEVEL_ERROR, 'Error ' . $criteria->stmt->errorCode() . " executing statement: \n" . print_r($errorInfo, true). "\nUsing Query:\n" . $criteria->toSQL() . "\n");
                 if (($errorInfo[1] == '1146' || $errorInfo[1] == '1') && $xpdo->getOption(xPDO::OPT_AUTO_CREATE_TABLES)) {
                     if ($xpdo->getManager() && $xpdo->manager->createObjectContainer($className)) {
                         $tstart= $xpdo->getMicroTime();
                         if (!$criteria->stmt->execute()) {
-                            $xpdo->log(xPDO::LOG_LEVEL_ERROR, "Error " . $criteria->stmt->errorCode() . " executing statement: \n" . print_r($criteria->stmt->errorInfo(), true));
+                            $xpdo->log(xPDO::LOG_LEVEL_ERROR, "Error " . $criteria->stmt->errorCode() . " executing statement: \n" . print_r($criteria->stmt->errorInfo(), true) . "\nUsing Query:\n" . $criteria->toSQL() . "\n");
                         }
                         $tend= $xpdo->getMicroTime();
                         $totaltime= $tend - $tstart;
@@ -1321,6 +1321,14 @@ class xPDOObject {
             $this->xpdo->log(xPDO::LOG_LEVEL_ERROR, 'Attempt to save lazy object: ' . print_r($this->toArray('', true), 1));
             return false;
         }
+        //Pgsql and Oci have their own save methods
+        if (in_array($this->xpdo->config['dbtype'], array('pgsql', 'oci'))) {
+            $saved = $this->xpdo->call('xPDOObject', '_save', array(&$this, $cacheFlag));
+            if ($saved)
+                return $saved;
+        }
+
+
         $result= true;
         $sql= '';
         $pk= $this->getPrimaryKey();
@@ -1451,7 +1459,7 @@ class xPDOObject {
                 if ($result) {
                     if ($pkn && !$pk) {
                         if ($pkGenerated) {
-                            $this->_fields[$this->getPK()]= $this->xpdo->lastInsertId($this->_class, $pkn);
+                            $this->_fields[$this->getPK()]= $this->xpdo->lastInsertId($this->_class, $this->getPK());
                         }
                         $pk= $this->getPrimaryKey();
                     }

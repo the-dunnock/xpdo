@@ -78,8 +78,8 @@ class xPDODriver_oci extends xPDODriver {
             if (!$column) {
                 $column = $this->xpdo->getPK($className);
             }
-            $className = $this->xpdo->getTableClass($className);
-            $seqName = "{$className}_{$column}_seq";
+            $tableName = $this->xpdo->literal($this->xpdo->getTableName($className));
+            $seqName = "{$tableName}_{$column}_seq";
             $sql = "SELECT \"{$seqName}\".CURRVAL FROM dual";
             $seqStmt = $this->xpdo->query($sql);
             if ($sequences = $seqStmt->fetchAll(PDO::FETCH_COLUMN)) {

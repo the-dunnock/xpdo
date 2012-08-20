@@ -7,8 +7,8 @@ $xpdo_meta_map['xPDOSample']= array (
   'fields' => 
   array (
     'parent' => 0,
-    'unique_varchar2' => NULL,
-    'varchar2' => NULL,
+    'unique_varchar' => NULL,
+    'varchar' => NULL,
     'text' => NULL,
     'timestamp' => 'CURRENT_TIMESTAMP',
     'unix_timestamp' => 0,

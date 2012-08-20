@@ -176,8 +176,8 @@ class xPDOTest extends xPDOTestCase {
      */
     public function providerGetAncestry() {
         return array(
-            array('Person',array('Person','xPDOSimpleObject','xPDOObject', 'xPDOObject_base')),
-            array('Person',array('xPDOSimpleObject','xPDOObject', 'xPDOObject_base'),false),
+            array('Person',array('Person','xPDOSimpleObject','xPDOObject')),
+            array('Person',array('xPDOSimpleObject','xPDOObject'),false),
         );
     }
 

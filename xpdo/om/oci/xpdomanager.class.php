@@ -97,7 +97,7 @@ class xPDOManager_oci extends xPDOManager {
                     $removed= true;
                     $this->xpdo->log(xPDO::LOG_LEVEL_INFO, 'Dropped table ' . $className . "\nSQL: {$sql}\n");
 
-                    $sql = "SELECT SEQUENCE_NAME FROM user_sequences WHERE SEQUENCE_NAME LIKE '{$this->xpdo->getTableClass($className)}_%'";
+                    $sql = "SELECT SEQUENCE_NAME FROM user_sequences WHERE SEQUENCE_NAME LIKE '{$this->xpdo->literal($this->xpdo->getTableName($className))}_%'";
                     $seqStmt = $this->xpdo->query($sql);
                     
                     $sequences = $seqStmt->fetchAll(PDO::FETCH_ASSOC);
@@ -157,12 +157,12 @@ class xPDOManager_oci extends xPDOManager {
                         $indexset = $this->getIndexDef($className, $indexkey, $indexdef);
                         switch ($indexType) {
                             case 'INDEX':
-                                $createIndices[$indexkey] = "CREATE INDEX {$this->xpdo->escape($className . '_' . $indexkey)} ON {$tableName} ({$indexset})";
+                                $createIndices[$indexkey] = "CREATE INDEX {$this->xpdo->escape($this->xpdo->literal($tableName) . '_' . $indexkey)} ON {$tableName} ({$indexset})";
                                 break;
                             case 'PRIMARY KEY':
                             case 'UNIQUE':
                             default:
-                                $tableConstraints[]= "CONSTRAINT {$this->xpdo->escape($className . '_' . $indexkey)} {$indexType} ({$indexset})";
+                                $tableConstraints[]= "CONSTRAINT {$this->xpdo->escape($this->xpdo->literal($tableName) . '_' . $indexkey)} {$indexType} ({$indexset})";
                                 break;
                         }
                     }
@@ -295,7 +295,7 @@ class xPDOManager_oci extends xPDOManager {
         $created = false;
         if ($this->xpdo->getConnection(array(xPDO::OPT_CONN_MUTABLE => true))) {
             $tableName = $this->xpdo->getTableName($className);
-            $seqName = "{$className}_{$column}_seq";
+            $seqName = "{$this->xpdo->literal($tableName)}_{$column}_seq";
             $sql = "CREATE SEQUENCE {$this->xpdo->escape($seqName)} MINVALUE {$start} START WITH {$start} INCREMENT BY {$increment}";
             if (!is_int($cache) && $cache == "NOCACHE") { 
                 $sql .= " NOCACHE";
@@ -304,7 +304,7 @@ class xPDOManager_oci extends xPDOManager {
             }
             if ($this->xpdo->exec($sql) !== false) {
                 $this->xpdo->log(xPDO::LOG_LEVEL_DEBUG, "Sequence {$seqName} created on {$tableName};\n SQL: " . $sql . "\n");
-                $trigName = "{$className}_{$column}_trig";
+                $trigName = "{$this->xpdo->literal($tableName)}_{$column}_trig";
                 $sql = "CREATE OR REPLACE TRIGGER {$this->xpdo->escape($trigName)}
 BEFORE INSERT ON {$tableName}
 FOR EACH ROW
@@ -331,8 +331,9 @@ END;";
     }
     
     private function addUpdateTrigger($className, $column, $dataType) {
-        $sql = "CREATE OR REPLACE TRIGGER {$this->xpdo->escape($className.'_'.$column.'_'.update)}
-BEFORE UPDATE ON {$this->xpdo->escape($this->xpdo->getTableName($className))}
+        $tableName = $this->xpdo->getTableName($className);
+        $sql = "CREATE OR REPLACE TRIGGER {{$this->xpdo->literal($tableName)}.'_'.$column.'_'.update)}
+BEFORE UPDATE ON {$tableName }
 FOR EACH ROW
 BEGIN
     IF NOT UPDATING (:new.{$this->xpdo->escape($column)}) THEN
@@ -340,7 +341,7 @@ BEGIN
     END IF;
 END;";
         if($this->xpdo->exec($sql) !== false) {
-            $this->xpdo->log(xPDO::LOG_LEVEL_DEBUG, "ON UPDATE trigger created on {$this->xpdo->getTableName($className)} for column {$column} with data type {$dataType}");
+            $this->xpdo->log(xPDO::LOG_LEVEL_DEBUG, "ON UPDATE trigger created on {$tableName } for column {$column} with data type {$dataType}");
             $result = true;
         } else {
             $this->xpdo->log(xPDO::LOG_LEVEL_ERROR, "Unable to create ON UPDATE trigger for {$tableName}: " . print_r($this->xpdo->errorInfo(), true), '', __METHOD__, __FILE__, __LINE__);

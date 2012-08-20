@@ -119,6 +119,8 @@ class xPDO {
     const OPT_HYDRATE_FIELDS = 'hydrate_fields';
     const OPT_HYDRATE_ADHOC_FIELDS = 'hydrate_adhoc_fields';
     const OPT_HYDRATE_RELATED_OBJECTS = 'hydrate_related_objects';
+    const OPT_LOCKFILE_EXTENSION = 'lockfile_extension';
+    const OPT_USE_FLOCK = 'use_flock';
     /**
      * @deprecated
      * @see call()
@@ -998,7 +1000,18 @@ class xPDO {
                 $expr= $this->getSelectColumns($className, $query->getAlias(), '', $pk);
             }
             if (isset($query->query['columns'])) $query->query['columns'] = array();
-            $query->select(array ("COUNT(DISTINCT {$expr})"));
+            if ($expr != "*") {
+                $temp = $this->newQuery($className);
+                $temp->select('count(*) AS xpdo_count');
+                $query->select(array("DISTINCT {$expr}"));
+                unset($temp->query['from']);
+                $query->prepare();
+                $temp->query['from']['tables'][] = array('table' => "({$query->toSQL()})",'alias' => 'sub_query');
+                $query = $temp;
+                unset($temp);
+            } else {
+                $query->select(array ("COUNT(DISTINCT {$expr})"));
+            }
             if ($stmt= $query->prepare()) {
                 if ($stmt->execute()) {
                     if ($results= $stmt->fetchAll(PDO::FETCH_COLUMN)) {
@@ -1010,7 +1023,6 @@ class xPDO {
         }
         return $count;
     }
-
     /**
      * Retrieves an xPDOObject instance with specified related objects.
      *
@@ -2428,7 +2440,7 @@ class xPDO {
     /**
      * @see http://php.net/manual/en/function.pdo-lastinsertid.php
      */
-    public function lastInsertId($className = null, $column = null) {
+    public function lastInsertId($className = null, $fieldName = null) {
         if (!$this->connect()) {
             return false;
         }
