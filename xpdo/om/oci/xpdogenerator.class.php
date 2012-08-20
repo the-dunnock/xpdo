@@ -90,12 +90,9 @@ class xPDOGenerator_oci extends xPDOGenerator {
         $tableLike= ($tablePrefix && $restrictPrefix);
         if ($tableLike) {
             $tablesStmt= $this->manager->xpdo->query("SELECT * FROM user_tables WHERE table_name LIKE '{$tablePrefix}%' ORDER BY table_name");
-            $tmpSmt = "SELECT * FROM user_tables WHERE table_name LIKE '{$tablePrefix}%' ORDER BY table_name";
         } else {
             $tablesStmt= $this->manager->xpdo->query("SELECT * FROM user_tables ORDER BY table_name");
-            $tmpSmt = "SELECT * FROM user_tables ORDER BY table_name";
         }
-        echo "<br>" . $tmpSmt . "</br>";
         $tables= $tablesStmt->fetchAll(PDO::FETCH_NUM);
         if ($this->manager->xpdo->getDebug() === true) $this->manager->xpdo->log(xPDO::LOG_LEVEL_DEBUG, print_r($tables, true));
         foreach ($tables as $table) {
