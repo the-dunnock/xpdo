@@ -60,7 +60,7 @@ class xPDOManager_oci extends xPDOManager {
                 }
             }
         }
-        return $return;
+        return true;
     }
 
     public function removeSourceContainer($dsnArray = null, $username= null, $password= null) {
@@ -81,7 +81,7 @@ class xPDOManager_oci extends xPDOManager {
                 }
             }
         }
-        return $return;
+        return true;
     }
 
     public function removeObjectContainer($className) {

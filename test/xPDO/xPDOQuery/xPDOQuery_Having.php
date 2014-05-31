@@ -93,7 +93,7 @@ class xPDOQueryHavingTest extends xPDOTestCase {
             'color' => $this->xpdo->escape('color'),
             'color_count' => "COUNT({$this->xpdo->escape('id')})"
         ));
-        $criteria->groupby('color');
+        $criteria->groupby($this->xpdo->escape('color'));
         $criteria->prepare();
         $criteria->stmt->execute();
         $this->assertEquals(4, count($criteria->stmt->fetchAll(PDO::FETCH_ASSOC)));
@@ -156,10 +156,10 @@ class xPDOQueryHavingTest extends xPDOTestCase {
             $criteria->select(array(
                 $this->xpdo->getSelectColumns('Item', 'Item', '', array('id', 'name', 'color'))
             ));
-            $criteria->groupby('id');
-            $criteria->groupby('name');
-            $criteria->groupby('color');
-            $criteria->sortby('name', 'ASC'); // Cannot rely on order which DB returns
+            $criteria->groupby($this->xpdo->escape('id'));
+            $criteria->groupby($this->xpdo->escape('name'));
+            $criteria->groupby($this->xpdo->escape('color'));
+            $criteria->sortby($this->xpdo->escape('name'), 'ASC'); // Cannot rely on order which DB returns
             $criteria->having($having);
             $result = $this->xpdo->getCollection('Item',$criteria);
             if (is_array($result) && !empty($result)) {
@@ -237,12 +237,13 @@ class xPDOQueryHavingTest extends xPDOTestCase {
         try {
             $criteria = $this->xpdo->newQuery('Item');
             $criteria->select(array(
-                $this->xpdo->getSelectColumns('Item', 'Item', '', array('id','name')) // id cause of xPDO requires it
+                $this->xpdo->getSelectColumns('Item', 'Item', 'Item_', array('id','name', 'color')) // id cause of xPDO requires it
             ));
-            $criteria->groupby('id');
-            $criteria->groupby('name');
+            $criteria->groupby($this->xpdo->escape('Item').".".$this->xpdo->escape('id'));
+            $criteria->groupby($this->xpdo->escape('Item').".".$this->xpdo->escape('name'));
+            $criteria->groupby($this->xpdo->escape('Item').".".$this->xpdo->escape('color')); // Illegal group by with HAVING color without color selected
             $criteria->having($having);
-            $criteria->sortby('name', 'ASC'); // Cannot rely on order which DB returns
+            $criteria->sortby($this->xpdo->escape('Item').".".$this->xpdo->escape('name'), 'ASC'); // Cannot rely on order which DB returns
             $result = $this->xpdo->getCollection('Item',$criteria);
             if (is_array($result) && !empty($result)) {
                 $match = null;
@@ -327,11 +328,11 @@ class xPDOQueryHavingTest extends xPDOTestCase {
             $criteria->select(array(
                 $this->xpdo->getSelectColumns('Item', 'Item', '', array('id', 'name', 'color'))
             ));
-            $criteria->groupby('id');
-            $criteria->groupby('name');
-            $criteria->groupby('color');
+            $criteria->groupby($this->xpdo->escape('id'));
+            $criteria->groupby($this->xpdo->escape('name'));
+            $criteria->groupby($this->xpdo->escape('color'));
             $criteria->having($having);
-            $criteria->sortby('name', 'ASC'); // Cannot rely on order which DB returns
+            $criteria->sortby($this->xpdo->escape('name'), 'ASC'); // Cannot rely on order which DB returns
             $criteria->limit($limit,$start);
             $result = $this->xpdo->getCollection('Item',$criteria);
             if (is_array($result) && !empty($result)) {

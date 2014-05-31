@@ -68,6 +68,10 @@ class xPDOQuerySortByTest extends xPDOTestCase {
      * @dataProvider providerSortBy
      */
     public function testSortBy($sort,$dir,$nameOfFirst) {
+        // skip pgsql, oci
+        if (in_array(xPDOTestHarness::$properties['xpdo_driver'], array('pgsql', 'oci'))) {
+            return true;
+        }
     	if (!empty(xPDOTestHarness::$debug)) print "\n" . __METHOD__ . " = ";
         $success = false;
         try {
@@ -98,10 +102,55 @@ class xPDOQuerySortByTest extends xPDOTestCase {
     }
 
     /**
+     * Test sortby
+     * @dataProvider providerSortBy
+     */
+    public function testSortByANSI($sort,$dir,$nameOfFirst) {
+        // skip mysql, test above is for it
+        if (!in_array(xPDOTestHarness::$properties['xpdo_driver'], array('pgsql', 'oci'))) {
+            return true;
+        }
+        if (!empty(xPDOTestHarness::$debug)) print "\n" . __METHOD__ . " = ";
+        $success = false;
+        try {
+            $criteria = $this->xpdo->newQuery('Item');
+            $sort = explode(",",$sort);
+            foreach ($sort as $s) {
+                $sortTmp[] = $this->xpdo->escape($s);
+            }
+            $criteria->sortby(implode(",", $sortTmp), $dir);
+            $result = $this->xpdo->getCollection('Item',$criteria);
+            if (is_array($result) && !empty($result)) {
+                foreach ($result as $r) { $result = $r; break; }
+                $name = $result->get('name');
+                $this->assertEquals($nameOfFirst,$name,'xPDOQuery: SortBy did not return expected result, returned `'.$name.'` instead.');
+            } else {
+                throw new Exception('xPDOQuery: SortBy test getCollection call did not return an array');
+            }
+        } catch (Exception $e) {
+            $this->assertTrue(false,$e->getMessage());
+        }
+    }
+    /**
+     * Data provider for testLimit
+     * @see testLimit
+     */
+    public function providerSortByANSI() {
+        return array(
+            array('name','ASC','item-01'),
+            array('name','DESC','item-39'),
+            array('color,name','ASC','item-03'),
+        );
+    }
+    /**
      * Test sortby with groupby statement
      * @dataProvider providerSortByWithGroupBy
      */
     public function testSortByWithGroupBy($sort,$dir,$nameOfFirst) {
+        // skip pgsql, oci
+        if (in_array(xPDOTestHarness::$properties['xpdo_driver'], array('pgsql', 'oci'))) {
+            return true;
+        }
     	if (!empty(xPDOTestHarness::$debug)) print "\n" . __METHOD__ . " = ";
         try {
             $criteria = $this->xpdo->newQuery('Item');
@@ -133,6 +182,48 @@ class xPDOQuerySortByTest extends xPDOTestCase {
         );
     }
 
+
+    /**
+     * Test sortby with groupby statement
+     * @dataProvider providerSortByWithGroupByANSI
+     */
+    public function testSortByWithGroupByANSI($sort,$dir,$nameOfFirst) {
+        // skip mysql, test above is for it
+        if (!in_array(xPDOTestHarness::$properties['xpdo_driver'], array('pgsql', 'oci'))) {
+            return true;
+        }
+        if (!empty(xPDOTestHarness::$debug)) print "\n" . __METHOD__ . " = ";
+        try {
+            $criteria = $this->xpdo->newQuery('Item');
+            $criteria->select($this->xpdo->getSelectColumns('Item', 'Item', 'Item_', array($sort, 'id', 'color')));
+            $criteria->groupby("{$this->xpdo->escape($sort)},{$this->xpdo->escape('id')},{$this->xpdo->escape('color')}");
+            $criteria->sortby($this->xpdo->escape($sort),$dir);
+            $criteria->sortby($this->xpdo->escape('id'),'ASC');
+            $criteria->sortby($this->xpdo->escape('color'),'ASC');
+
+            $result = $this->xpdo->getCollection('Item',$criteria);
+            if (is_array($result) && !empty($result)) {
+                $match = null;
+                foreach ($result as $r) { $match = $r; break; }
+                $name = $match->get('name');
+                $this->assertEquals($nameOfFirst,$name,'xPDOQuery: SortBy did not return expected result, returned `'.$name.'` instead.');
+            } else {
+                throw new Exception('xPDOQuery: SortBy test with groupby call did not return an array');
+            }
+        } catch (Exception $e) {
+            $this->assertTrue(false,$e->getMessage());
+        }
+    }
+    /**
+     * Data provider for testSortByWithGroupBy
+     * @see testSortByWithGroupBy
+     */
+    public function providerSortByWithGroupByANSI() {
+        return array(
+            array('name','ASC','item-01'),
+            array('name','DESC','item-39'),
+        );
+    }
 
     /**
      * Test sortby with limit statement
